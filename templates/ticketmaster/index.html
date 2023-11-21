@@ -1,0 +1,66 @@
+{% extends 'ticketmaster/base.html' %}
+
+{% block body %}
+
+<div class="container-fluid">
+  <div class="row bg-primary justify-content-center">
+        <div class="col-sm-6">
+            <h1 class="display-3 text-center text-white mt-4">Ticketmaster</h1>
+            <h1 class = "text-center mb-5 text-white" >Quickly find tickets around you</h1>
+
+            <form action="{% url 'ticketmaster-index' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search by genre, artist or event" name="event_term">
+                        <input type="text" class="form-control" placeholder="Enter a city e.g., Hartford" name="city_term" >
+                        <button type="button" class="btn btn-success bg-danger" id="searchButton">SEARCH</button>
+                    </div>
+                </form>
+
+            {% for message in messages %}
+                <div class= "alert-dismissible alert alert-danger" role="alert">
+                        <h4>{{ message }}</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+            {% endfor %}
+
+        {% if events %}
+            <section class = "shadow p-5" id="event-container">
+                {% for event in events %}
+                             <div class = "container mt-1">
+                                 <div class="shadow rounded bg-light">
+                                       <div class="card mt-3 mb-3">
+                                                  <div class="row g-0 align-items-center">
+                                                   <div class="row g-0 align-items-center">
+                                                       <div class="col-md-4">
+                                                           <img src="{{ event.imageURL }}" class="card-img rounded p-1" alt="venue-image">
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="col-sm-8 col-6">\n' +
+                                                                        <h3 class="card-title">{{ event.eventName }}</h3>
+                                                                    </div>
+                                                                    <div class="col-sm-4 col-6">
+                                                                        <small class="fs-4 text-success fw-bold">{{ event.eventDate }}  <br></small>
+                                                                           <small class="fs-5 text-success fw-bold">{{ event.eventTime }} <br></small>
+                                                                    </div>
+                                                                </div>
+                                                                <small class="fs-4 text-muted"><br>{{ event.venueName }}</small>
+                                                                <p class="card-text text-muted"><br>{{ event.venueAdd }} <br>{{ event.venueCity }}, {{ event.venueState }}</p>
+                                                                <a class="btn btn-primary" href='{{ event.eventURL }}' role="button">Find Tickets</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                     </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+        </div>
+  </div>
+</div>
+
+{% endblock %}
