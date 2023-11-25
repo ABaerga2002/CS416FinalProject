@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 import requests
 from datetime import datetime
 from django.contrib import messages
+from .models import EventList
 
 
 def get_events(location, search_term):
