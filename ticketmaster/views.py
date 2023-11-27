@@ -80,7 +80,7 @@ def index(request):
 
             event_list.append(event_details)
 
-        context = {'events': event_list}
+        context = {'eventList': event_list}
         return render(request, 'ticketmaster/index.html', context)
 
     return render(request, "ticketmaster/index.html")
