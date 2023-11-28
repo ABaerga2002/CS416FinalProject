@@ -80,6 +80,7 @@ def get_events(location, search_term):
         data = response.json()
 
         return data
+
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}")
 
