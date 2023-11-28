@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from ticketmaster import views
 
 urlpatterns = [
-    path('', views.index, name='ticketmaster-index'),
+    path('ticketmaster/', views.index, name='ticketmaster-index'),
 ]
