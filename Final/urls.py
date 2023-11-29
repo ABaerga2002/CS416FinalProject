@@ -15,9 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from ticketmaster import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('ticketmaster/', include('ticketmaster.urls'))
+    path('', views.index, name='ticketmaster-index')
 ]
