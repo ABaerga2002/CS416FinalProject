@@ -23,7 +23,8 @@ def index(request):
 
         else:
             print(events)
-            if events.totalElements is 0:
+            eventCheck = events['page']['totalElements']
+            if eventCheck is 0:
                 messages.info(request, 'No results were found.')
                 return redirect('ticketmaster-index')
             current_events = events['_embedded']["events"]
