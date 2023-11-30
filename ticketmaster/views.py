@@ -23,24 +23,35 @@ def index(request):
 
         else:
             print(events)
-            current_events = events['_embedded']
+            eventCheck = events['page']['totalElements']
+            if eventCheck is 0:
+                messages.info(request, 'No results were found.')
+                return redirect('ticketmaster-index')
+            current_events = events['_embedded']["events"]
 
             event_list = []
 
         for event in current_events:
-            eventName = event["events"][event]["name"]
-            imageURL = event["events"][event]["images"][0]["url"]
-            eventDate = event["events"][event]["dates"]["start"]["dateTime"]
-            venueName = event["events"][event]["_embedded"]["venues"][0]["name"]
-            venueCity = event["events"][event]["_embedded"]["venues"][0]["city"]["name"]
-            venueState = event["events"][event]["_embedded"]["venues"][0]["state"]["name"]
-            venueAdd = event["events"][event]["_embedded"]["venues"][0]["address"]["line1"]
-            eventURL = event["events"][event]["url"]
-
+            eventName = event["name"]
+            print(eventName)
+            imageURL = event["images"][0]["url"]
+            print(imageURL)
+            eventDate = event["dates"]["start"]["dateTime"]
             date_object = datetime.strptime(eventDate[:10], "%Y-%m-%d")
             eventDate = date_object.strftime("%a %b %d %Y")
-            time_object = datetime.strptime(eventDate[:6], "%I:%M%p %Z")
-            eventTime = time_object.strftime("%H:%M %Z")
+            print(eventDate)
+            eventTime = event["dates"]["start"]["localTime"]
+            print(eventTime)
+            venueName = event["_embedded"]["venues"][0]["name"]
+            print(venueName)
+            venueCity = event["_embedded"]["venues"][0]["city"]["name"]
+            print(venueCity)
+            venueState = event["_embedded"]["venues"][0]["state"]["name"]
+            print(venueState)
+            venueAdd = event["_embedded"]["venues"][0]["address"]["line1"]
+            print(venueAdd)
+            eventURL = event["url"]
+            print(eventURL)
 
             event_details = {
                 'eventName': eventName,
@@ -69,7 +80,7 @@ def get_events(location, search_term):
         params = {
             "city": location,
             "classificationName": search_term,
-            "API_KEY": "GCKxxpg0KUZXuCTZsYllPo2bAjvYz9Xh",
+            "apikey": "GCKxxpg0KUZXuCTZsYllPo2bAjvYz9Xh",
             "sort": "date,asc"
         }
 
