@@ -36,12 +36,23 @@ def index(request):
             print(eventName)
             imageURL = event["images"][0]["url"]
             print(imageURL)
-            eventDate = event["dates"]["start"]["dateTime"]
-            date_object = datetime.strptime(eventDate[:10], "%Y-%m-%d")
-            eventDate = date_object.strftime("%a %b %d %Y")
-            print(eventDate)
-            eventTime = event["dates"]["start"]["localTime"]
-            print(eventTime)
+            if 'dates' in event and 'start' in event['dates'] and 'dateTime' in event['dates']['start']:
+                eventDate = event["dates"]["start"]["dateTime"]
+                date_object = datetime.strptime(eventDate, "%Y-%m-%dT%H:%M:%SZ")
+                eventDate = date_object.strftime("%a %b %d %Y")
+                print(eventDate)
+
+                eventTime = event["dates"]["start"]["localTime"]
+
+                if eventDate:
+                    try:
+                        timeObject = datetime.strptime(eventTime, "%H:%M:%S")
+                        eventTime = timeObject.strftime("%I:%M %p")
+                        print(eventTime)
+                    except ValueError:
+                        eventTime = "N/A"
+                        print(eventTime)
+
             venueName = event["_embedded"]["venues"][0]["name"]
             print(venueName)
             venueCity = event["_embedded"]["venues"][0]["city"]["name"]
