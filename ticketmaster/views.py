@@ -2,8 +2,35 @@ from django.shortcuts import render, redirect
 import requests
 from datetime import datetime
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
 from .models import EventList
 
+
+def register_veiws(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('ticketmaster-index')
+    else:
+        form = UserCreationForm(request.POST or None)
+    context = {'form': form}
+    return render(request, "ticketmaster/register.html", context)
+
+def login_veiws(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('ticketmaster-index')
+    else:
+        form = AuthenticationForm()
+
+
+    context = {'form': form}
+    return render(request, "ticketmaster/login.html", context)
 
 def index(request):
     EventList.objects.all().delete()
@@ -110,3 +137,8 @@ def get_events(location, search_term):
         print(f"Request failed: {e}")
 
         return None
+
+
+def logout_veiws(request):
+    logout(request)
+    return redirect('ticketmaster-index')
