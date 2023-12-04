@@ -136,3 +136,6 @@ def get_events(location, search_term):
         return None
 
 
+def logout_veiws(request):
+    logout(request)
+    return redirect('ticketmaster-index')
