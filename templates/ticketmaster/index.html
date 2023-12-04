@@ -54,7 +54,10 @@
                                                                     </div>
                                                                     <div class="col-sm-4 col-6">
                                                                         <small class="fs-4 text-success fw-bold">{{ event.eventDate }}  <br></small>
-                                                                           <small class="fs-5 text-success fw-bold">{{ event.eventTime }} <br></small>
+                                                                        <small class="fs-5 text-success fw-bold">{{ event.eventTime }} <br></small>
+                                                                        {%  if user.is_authenticated %}
+                                                                            <p>this is where the cartbutton will be</p>
+                                                                        {% endif %}
                                                                     </div>
                                                                 </div>
                                                                 <small class="fs-4 text-muted"><br>{{ event.venueName }}</small>
