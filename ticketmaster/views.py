@@ -6,7 +6,6 @@ from .models import EventList
 
 
 def index(request):
-    EventList.objects.all().delete()
     if request.method == 'POST':
 
         location = request.POST['city_term']
@@ -65,7 +64,7 @@ def index(request):
             eventURL = event["url"]
             print(eventURL)
 
-            EventList.objects.create(eventName=eventName, eventDate=eventDate, eventTime=eventTime, eventURL=eventURL)
+            EventList.objects.get(id=event).update(eventName=eventName, eventDate=eventDate, eventTime=eventTime, eventURL=eventURL)
 
             event_details = {
                 'eventName': eventName,
