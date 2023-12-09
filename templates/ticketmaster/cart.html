@@ -3,8 +3,18 @@
 {% block body %}
     <div class="container-fluid">
         <div class="row bg-primary justify-content-center">
-            <a class="link-dark" href="{% url 'ticketmaster-index' %}">Home</a>
-            <a class="link-dark" href="{% url 'logout' %}">Logout</a>
+            <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+             <div class = container>
+                 <a class="navbar-brand" href="#">Ticketmaster</a>
+                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                     <ul class="navbar-nav me-auto mt-2 mb-2">
+                         <li class = "nav-item"><a class="nav-link" href="{% url 'ticketmaster-index' %}">Home</a></li>
+                         <li class = "nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                     </ul>
+                 </div>
+             </div>
+             </nav>
             <div class="col-sm-6">
                 <h1 class="display-3 text-center text-white mt-4">Ticketmaster</h1>
                 <h1 class = "text-center mb-5 text-white" >Your Cart</h1>
