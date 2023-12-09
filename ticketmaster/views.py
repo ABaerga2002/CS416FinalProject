@@ -28,8 +28,7 @@ def login_veiws(request):
             login(request, user)
             return redirect('ticketmaster-index')
     else:
-        form = AuthenticationForm()
-
+        form = AuthenticationForm(request.POST or None)
 
     context = {'form': form}
     return render(request, "ticketmaster/login.html", context)
