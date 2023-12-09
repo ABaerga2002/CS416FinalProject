@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
+from .forms import UserRegistrationForm
 from .models import EventList
 
 
@@ -11,7 +12,8 @@ def register_veiws(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            login(request, user)
             return redirect('ticketmaster-index')
     else:
         form = UserCreationForm(request.POST or None)
@@ -26,8 +28,7 @@ def login_veiws(request):
             login(request, user)
             return redirect('ticketmaster-index')
     else:
-        form = AuthenticationForm()
-
+        form = AuthenticationForm(request.POST or None)
 
     context = {'form': form}
     return render(request, "ticketmaster/login.html", context)
