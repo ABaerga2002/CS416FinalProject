@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 import requests
+from django.http import JsonResponse
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
-from .models import EventList
+from .models import EventList, CartEvent
 
 
 def register_veiws(request):
@@ -18,6 +19,7 @@ def register_veiws(request):
     context = {'form': form}
     return render(request, "ticketmaster/register.html", context)
 
+
 def login_veiws(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -28,9 +30,9 @@ def login_veiws(request):
     else:
         form = AuthenticationForm()
 
-
     context = {'form': form}
     return render(request, "ticketmaster/login.html", context)
+
 
 def index(request):
     EventList.objects.all().delete()
@@ -57,7 +59,7 @@ def index(request):
                 return redirect('ticketmaster-index')
             current_events = events['_embedded']["events"]
 
-            event_list = []
+            # event_list = []
 
         for event in current_events:
             eventName = event["name"]
@@ -92,7 +94,18 @@ def index(request):
             eventURL = event["url"]
             print(eventURL)
 
-            EventList.objects.create(eventName=eventName, eventDate=eventDate, eventTime=eventTime, eventURL=eventURL)
+            EventList.objects.create(
+                eventName=eventName,
+                imageURL=imageURL,
+                eventDate=eventDate,
+                eventTime=eventTime,
+                venueName=venueName,
+                venueCity=venueCity,
+                venueState=venueState,
+                venueAdd=venueAdd,
+                eventURL=eventURL
+
+            )
 
             event_details = {
                 'eventName': eventName,
@@ -106,9 +119,10 @@ def index(request):
                 'eventURL': eventURL
             }
 
-            event_list.append(event_details)
+            # event_list.append(event_details)
 
-        context = {'eventList': event_list}
+        eve = EventList.objects.all()
+        context = {'eventList': eve}
         return render(request, 'ticketmaster/index.html', context)
 
     return render(request, "ticketmaster/index.html")
@@ -142,3 +156,63 @@ def get_events(location, search_term):
 def logout_veiws(request):
     logout(request)
     return redirect('ticketmaster-index')
+
+
+def add_cart(request, event_id):
+    try:
+        event = EventList.objects.get(id=event_id)
+
+        if CartEvent.objects.filter(eventName=event.eventName, eventDate=event.eventDate).exists():
+            return JsonResponse({'message': 'Event is already in the cart'})
+
+        CartEvent.objects.create(
+            eventName=event.eventName,
+            imageURL=event.imageURL,
+            eventDate=event.eventDate,
+            eventTime=event.eventTime,
+            venueName=event.venueName,
+            venueCity=event.venueCity,
+            venueState=event.venueState,
+            venueAdd=event.venueAdd,
+            eventURL=event.eventURL
+        )
+        print(f"Event ID: {event_id}")
+        return JsonResponse(
+            {
+                'added': True,
+                'message': 'Event added to cart successfully.'
+            }
+        )
+    except EventList.DoesNotExist:
+        return JsonResponse(
+            {
+                'added': False,
+                'message': 'Event not found.'
+            }
+        )
+
+
+def view_cart(request):
+    events = CartEvent.objects.all()
+    context = {'cartList': events}
+
+    return render(request, "ticketmaster/cart.html", context)
+
+
+def remove_cart(request, event_id):
+    try:
+        event = CartEvent.objects.get(id=event_id)
+        event.delete()
+        return JsonResponse(
+            {
+                'deleted': True,
+                'message': 'Event removed successfully.'
+            }
+        )
+    except CartEvent.DoesNotExist:
+        return JsonResponse(
+            {
+                'deleted': False,
+                'message': 'Event not found.'
+            }
+        )

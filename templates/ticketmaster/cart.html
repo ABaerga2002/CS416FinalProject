@@ -1,0 +1,53 @@
+{% extends 'ticketmaster/base.html' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row bg-primary justify-content-center">
+            <a class="link-dark" href="{% url 'ticketmaster-index' %}">Home</a>
+            <a class="link-dark" href="{% url 'logout' %}">Logout</a>
+            <div class="col-sm-6">
+                <h1 class="display-3 text-center text-white mt-4">Ticketmaster</h1>
+                <h1 class = "text-center mb-5 text-white" >Your Cart</h1>
+            </div>
+        </div>
+    </div>
+
+
+    {% if cartList %}
+        <section class="shadow p-5" id="event-container">
+            {% for events in cartList %}
+                <div class="container mt-1" id="event-{{ events.id }}">
+                    <div class="shadow rounded bg-light">
+                        <div class="card mt-3 mb-3">
+                            <div class="row g-0 align-items-center">
+                                <div class="row g-0 align-items-center">
+                                    <div class="col-md-4">
+                                        <img src="{{ events.imageURL }}" class="card-img rounded p-1 img" alt="venue-image">
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-sm-8 col-6">
+                                                    <h3 class="card-title">{{ events.eventName }}</h3>
+                                                </div>
+                                                <div class="col-sm-4 col-6">
+                                                    <small class="fs-4 text-success fw-bold">{{ events.eventDate }}<br></small>
+                                                    <small class="fs-5 text-success fw-bold">{{ events.eventTime }}<br></small>
+                                                </div>
+                                            </div>
+                                            <small class="fs-4 text-muted"><br>{{ events.venueName }}</small>
+                                            <p class="card-text text-muted"><br>{{ events.venueAdd }} <br>{{ events.venueCity }}, {{ events.venueState }}</p>
+                                            <a class="btn btn-primary" href='{{ events.eventURL }}' role="button">Find Tickets</a>
+                                            <button class="btn btn-primary" onclick="deleteItem('{% url 'remove' events.id %}', {{ events.id }})">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+{% endblock %}
