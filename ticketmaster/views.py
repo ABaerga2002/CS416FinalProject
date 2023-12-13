@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 from .models import EventList, CartEvent
+from django.contrib.auth.decorators import login_required
 
 
 def register_veiws(request):
@@ -157,7 +158,7 @@ def logout_veiws(request):
     logout(request)
     return redirect('ticketmaster-index')
 
-
+@login_required(login_url='login')
 def add_cart(request, event_id):
     try:
         event = EventList.objects.get(id=event_id)
@@ -166,6 +167,7 @@ def add_cart(request, event_id):
             return JsonResponse({'message': 'Event is already in the cart'})
 
         CartEvent.objects.create(
+            user=request.user,
             eventName=event.eventName,
             imageURL=event.imageURL,
             eventDate=event.eventDate,
@@ -191,17 +193,17 @@ def add_cart(request, event_id):
             }
         )
 
-
+@login_required(login_url='login')
 def view_cart(request):
-    events = CartEvent.objects.all()
+    events = CartEvent.objects.filter(user=request.user)
     context = {'cartList': events}
 
     return render(request, "ticketmaster/cart.html", context)
 
-
+@login_required(login_url='login')
 def remove_cart(request, event_id):
     try:
-        event = CartEvent.objects.get(id=event_id)
+        event = CartEvent.objects.get(id=event_id, user=request.user)
         event.delete()
         return JsonResponse(
             {
